@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+body {
+  background: url(images/background.jpg);
+  color: white;
+}
+div#memory_board{
+ background:#000;
+ border:#999 1px solid;
+ width:925px;
+ height:640px;
+ padding:24px;
+ margin:0px auto;
+}
+div#memory_board > div{
+ background: url(http://www.fastdecals.com/graphics/starwars_imperial_tn.jpg) no-repeat center;
+background-size: 120px 150px;
+
+ border:white 1px solid;
+ width:100px;
+ height:130px;
+ float:left;
+ margin:15px;
+ padding:0px;
+ cursor:pointer;
+ text-align:center;
+}
+
+div > img{
+width:100px;
+height:130px;
+}
+#heading{
+  text-align: center;
+}
+</style>
+<script>
+// Scripted By Adam Khoury in connection with the following video tutorial:
+// http://www.youtube.com/watch?v=c_ohDPWmsM0
+var memory_array = ['images/A.jpg','images/A.jpg','images/B.jpg','images/B.jpg','images/C.jpg','images/C.jpg','images/D.jpg','images/D.jpg','images/E.jpg','images/E.jpg','images/F.jpg','images/F.jpg','images/G.jpg','images/G.jpg','images/H.jpg','images/H.jpg','images/I.jpg','images/I.jpg','images/J.jpg','images/J.jpg','images/K.jpg','images/K.jpg','images/L.jpg','images/L.jpg','images/M.jpg','images/M.jpg','images/N.jpg','images/N.jpg'];
+var memory_values = [];
+var memory_tile_ids = [];
+var tiles_flipped = 0;
+Array.prototype.memory_tile_shuffle = function(){
+    var i = this.length, j, temp;
+    while(--i > 0){
+        j = Math.floor(Math.random() * (i+1));
+        temp = this[j];
+        this[j] = this[i];
+        this[i] = temp;
+    }
+}
+function newBoard(){
+  var audio = new Audio('images/audio.mp3');
+  audio.play();
+ tiles_flipped = 0;
+ var output = '';
+    memory_array.memory_tile_shuffle();
+ for(var i = 0; i < memory_array.length; i++){
+  output += '<div id="tile_'+i+'" onclick="memoryFlipTile(this,\''+memory_array[i]+'\')"></div>';
+ }
+ document.getElementById('memory_board').innerHTML = output;
+}
+function memoryFlipTile(tile,val){
+ if(tile.innerHTML == "" && memory_values.length < 2){
+  tile.style.background = '#FFF';
+  tile.innerHTML = '<img src="' + val + '">';
+  if(memory_values.length == 0){
+if(tiles_flipped == memory_array.length - 1){
+     alert("Board cleared... generating new board");
+     document.getElementById('memory_board').innerHTML = "";
+     newBoard();
+    }
+   memory_values.push(val);
+   memory_tile_ids.push(tile.id);
+  } else if(memory_values.length == 1){
+   memory_values.push(val);
+   memory_tile_ids.push(tile.id);
+   if(memory_values[0] == memory_values[1]){
+    tiles_flipped += 2;
+    // Clear both arrays
+    memory_values = [];
+             memory_tile_ids = [];
+    // Check to see if the whole board is cleared
+    if(tiles_flipped == memory_array.length){
+
+      alert("Oh... Looks you remember things! Happy 24th birthday my love! Do you want to play again this game?");
+      document.getElementById('memory_board').innerHTML = "";
+
+      newBoard();
+    }
+
+   } else {
+    function flip2Back(){
+        // Flip the 2 tiles back over
+        var tile_1 = document.getElementById(memory_tile_ids[0]);
+        var tile_2 = document.getElementById(memory_tile_ids[1]);
+        tile_1.style.background = 'url(http://www.fastdecals.com/graphics/starwars_imperial_tn.jpg) no-repeat';
+        tile_1.style.backgroundSize = '120px 150px';
+
+                 tile_1.innerHTML = "";
+        tile_2.style.background = 'url(http://www.fastdecals.com/graphics/starwars_imperial_tn.jpg) no-repeat';
+        tile_2.style.backgroundSize = '120px 150px';
+
+                 tile_2.innerHTML = "";
+        // Clear both arrays
+        memory_values = [];
+                 memory_tile_ids = [];
+    }
+    setTimeout(flip2Back, 700);
+   }
+  }
+ }
+}
+</script>
+</head>
+<body>
+<div id="heading">
+  <h3>Ieva's Memory game</h3>
+  <p>Let's check how good your memory is. Do you remember things?</p>
+
+</div>
+<div id="memory_board"></div>
+<script>newBoard();</script>
+</body>
+</html>﻿
